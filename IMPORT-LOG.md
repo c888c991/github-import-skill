@@ -9,7 +9,7 @@
 | # | 导入时间（本地 / UTC） | 目标仓库 | 分支 | 提交号 | 文件数 | 结果 |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 2026-09-15 12:04 / 04:04Z | `c888c991/github-test` | main | `ddc91cc` | 1 | 成功 |
-| 2 | 2026-09-15 12:12 / 04:12Z | `c888c991/workbuddy-skills` | main | 见详情 | 3 | 成功 |
+| 2 | 2026-09-15 12:14 / 04:14Z | `c888c991/workbuddy-skills` | main | `7da0431` | 3 | 成功 |
 
 ## 字段说明
 
@@ -44,19 +44,24 @@
   3. 中途误试 `http.sslBackend=openssl`，报 `unable to get local issuer certificate (20)`，已改回。
 - **结果**：成功。远端 1 个文件、1 条提交。
 
-### 第 2 次 · 2026-09-15 12:12（UTC 04:12）
+### 第 2 次 · 2026-09-15 12:14（UTC 04:14）
 
 - **仓库**：`c888c991/workbuddy-skills`（新建，公开）
 - **地址**：https://github.com/c888c991/workbuddy-skills
 - **分支**：`main`
+- **提交号**：`7da0431`
 - **提交信息**：初始化技能仓库，录入 github-import 技能
 - **导入内容**：
   - `README.md` —— 仓库说明
   - `IMPORT-LOG.md` —— 本文件
   - `skills/github-import/SKILL.md` —— 把代码导入 GitHub 的标准流程
+  - 共 3 个文件 423 行
 - **本地路径**：`E:\workbudy\2026-09-15-11-55-02\workbuddy-skills`
 - **用途**：建立技能仓库，供后续在 Codex 里写好的代码按 `github-import` 技能流程导入
+- **踩的坑**：`gh repo create --push` 仍走 SSH 报 22 端口被拒。原因是
+  `gh config get git_protocol -h github.com` 返回 `ssh`，**按主机设置覆盖了全局设置**。
+  用 `gh config set git_protocol https -h github.com` 修正后正常。
 - **备注**：本次同时把 `github-import` 技能装到本机
   `C:\Users\19106\.workbuddy\skills\github-import\`，并删除了内容重复的旧技能
   `configure-github-repo`（其内容已全部并入 `github-import`）
-- **结果**：成功
+- **结果**：成功。远端 3 个条目（含 `skills` 目录）、1 条提交。

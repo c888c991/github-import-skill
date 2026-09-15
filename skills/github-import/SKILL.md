@@ -24,7 +24,7 @@ agent_created: true
 | GitHub 账号 | `c888c991`（账号数字 id `211490266`） |
 | gh 命令行工具 | `C:\Program Files\GitHub CLI\gh.exe`（2.100.0） |
 | 登录状态 | 已登录，凭据存在系统密钥库 |
-| 推送方式 | HTTPS + gh 凭据助手，**不需要 SSH 密钥** |
+| 推送方式 | HTTPS + gh 凭据助手，**不需要 SSH 密钥**。`gh config get git_protocol -h github.com` 必须返回 `https` |
 | 提交署名 | `c888c991` |
 | 提交邮箱 | `211490266+c888c991@users.noreply.github.com` |
 
@@ -68,7 +68,7 @@ git config --global init.defaultBranch main
 
 # 4. 配免密推送
 gh auth setup-git
-gh config set git_protocol https
+gh config set git_protocol https -h github.com   # 必须带 -h，否则按主机设置仍是 ssh
 
 # 5. 证书坑（仅当有加速工具时）
 git config --global http.sslBackend schannel
@@ -230,6 +230,7 @@ git push
 | `unable to get local issuer certificate (20)` | 误把后端改成了 openssl | 改回 `git config --global http.sslBackend schannel` |
 | `ssh: connect to host github.com port 22: Connection refused` | 22 端口被墙/被拦 | 改用 HTTPS；remote 换掉：`git remote set-url origin https://github.com/...` |
 | `remote: Support for password authentication was removed` | 用了密码认证 | `gh auth setup-git` 配凭据助手 |
+| `ssh: connect to host github.com port 22: Connection refused` **出现在 `gh repo create --push` 时** | gh 的按主机协议设置仍是 ssh，全局设置被它覆盖 | `gh config set git_protocol https -h github.com`。**注意必须带 `-h github.com`**，只设全局的会被按主机设置覆盖（用 `gh config get git_protocol -h github.com` 核对） |
 | `HTTP 404 ... needs the "user" scope` | gh 权限不足 | 非必要别去申请，用 noreply 邮箱代替 |
 | `file is 123.45 MB; this exceeds GitHub's file size limit` | 大文件 | 从仓库移除，改用 Git LFS 或网盘 |
 | `failed to push some refs ... non-fast-forward` | 远端有新提交 | `git pull --rebase origin main` 再推 |
@@ -253,7 +254,7 @@ tasklist | grep -iE "steam|watt|accel"
 | # | 导入时间（本地 / UTC） | 仓库 | 分支 | 提交号 | 文件数 | 结果 |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 2026-09-15 12:04 / 04:04Z | `c888c991/github-test` | main | `ddc91cc` | 1 | 成功 |
-| 2 | 2026-09-15 12:12 / 04:12Z | `c888c991/workbuddy-skills` | main | 见详情 | 3 | 成功 |
+| 2 | 2026-09-15 12:14 / 04:14Z | `c888c991/workbuddy-skills` | main | `7da0431` | 3 | 成功 |
 
 ---
 
@@ -274,16 +275,23 @@ tasklist | grep -iE "steam|watt|accel"
   中途误试 `http.sslBackend=openssl`，报证书链缺失，已改回。
 - **结果**：成功。远端 1 个文件，1 条提交。
 
-### 第 2 次 · 2026-09-15 12:12（UTC 04:12）
+### 第 2 次 · 2026-09-15 12:14（UTC 04:14）
 
 - **仓库**：`c888c991/workbuddy-skills`（新建，公开）
+- **地址**：https://github.com/c888c991/workbuddy-skills
 - **分支**：`main`
-- **导入内容**：`README.md`、`IMPORT-LOG.md`、`skills/github-import/SKILL.md`（本技能本体）
+- **提交号**：`7da0431`
+- **提交信息**：初始化技能仓库，录入 github-import 技能
+- **导入内容**：`README.md`、`IMPORT-LOG.md`、`skills/github-import/SKILL.md`（本技能本体），
+  共 3 个文件 423 行
 - **本地路径**：`E:\workbudy\2026-09-15-11-55-02\workbuddy-skills`
 - **用途**：建立技能仓库，供后续在 Codex 里写好的代码按本技能流程导入
+- **踩的坑**：`gh repo create --push` 仍然走 SSH 报 22 端口被拒。原因是
+  `gh config get git_protocol -h github.com` 返回 `ssh`——**按主机设置覆盖了全局设置**。
+  用 `gh config set git_protocol https -h github.com` 修正后正常。已补进第四节对照表。
 - **备注**：本次同时把本技能装到本机 `C:\Users\19106\.workbuddy\skills\github-import\`，
   并删除了内容重复的旧技能 `configure-github-repo`（其内容已全部并入本技能）
-- **结果**：见仓库首页
+- **结果**：成功。远端 3 个条目（含 `skills` 目录）、1 条提交。
 
 ---
 

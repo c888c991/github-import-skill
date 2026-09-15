@@ -290,7 +290,7 @@ tasklist | grep -iE "steam|watt|accel"
 ## 五、导入记录
 
 **每次导完，在下面的表格追加一行，并在"六、导入详情"里补一段。**
-仓库里同名文件 `IMPORT-LOG.md` 保持同步，两边内容一致。
+本节的表格与仓库根目录 `IMPORT-LOG.md` 的第一节保持一致，记录完记得两边都更新。
 
 | # | 导入时间（本地 / UTC） | 仓库 | 分支 | 提交号 | 文件数 | 结果 |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -339,10 +339,21 @@ tasklist | grep -iE "steam|watt|accel"
 
 | 时间 | 变更 |
 | --- | --- |
-| 2026-09-15 12:26 | 仓库名 `workbuddy-skills` → `github-import-skill`；技能目录 `skills/github-import/` → `skills/github-import-skill/`。原因：原名看不出技能用途，Codex 检索时无法判断。 |
+| 2026-09-15 12:26 | 仓库名 `workbuddy-skills` → `github-import-skill`；技能目录 `skills/github-import/` → `skills/github-import-skill/`。原因：原名看不出技能用途，Codex 检索时无法判断。旧地址会自动 301 跳转。 |
+| 2026-09-15 12:26 | 仓库描述改为"把本地代码导入 GitHub 仓库的技能（github-import-skill）。含操作手册、报错排查与导入记录。" |
 | 2026-09-15 12:26 | 加强技能 `description`，并在正文最前面加了"给 Codex 的专用说明"一节。 |
 | 2026-09-15 12:26 | 删除本机技能副本 `C:\Users\19106\.workbuddy\skills\github-import\`，改为只维护仓库这一份（单一来源）。 |
 | 2026-09-15 12:26 | 新增仓库根目录 `AGENTS.md`，供 Codex 自动加载。 |
+
+对应提交号：`a8aa0fd`（改名 + 新增 AGENTS.md）、`07df0bf`（重写技能文件）。
+
+### 这次踩的坑
+
+重命名 `skills/github-import/` 时被系统占用，报 `Permission denied`，连子目录都改不动；
+随后新建的 `skills/github-import-skill/` 一度落盘丢失，最后靠重写文件解决。
+
+**结论：这台机器上不要用 `mv` 重命名已存在的目录**（尤其 GitHub 相关的目录，
+Steam++ 可能持有文件句柄）。改用 `git mv`，或"新建目录 + 复制内容 + 删除旧目录"。
 
 ## 八、维护提醒
 
